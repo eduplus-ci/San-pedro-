@@ -1,85 +1,103 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulaire de Candidature - Edu'Plus</title>
+    <title>Formulaire de Candidature</title>
     <link rel="stylesheet" href="styles1.css">
-    <link rel="icon" href="images/logo/LOGO.png">
-    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <link rel="icon" href="images/logo/LOGO.png"/>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
         (function(){
-            emailjs.init("LW4veR9wPiL_CT1wh"); // Remplacez par votre PUBLIC KEY
+            emailjs.init("LW4veR9wPiL_CT1wh"); // Remplace par ton vrai User ID
         })();
     </script>
 </head>
 <body>
 
-    <h1 id="dynamic-text">
-        <img src="images/logo/LOGO.png" style="border-radius: 45%; margin-top: 0px; margin-bottom: 0%;" class="sizelogo"><br>
-    </h1>
+<h1 id="dynamic-text">
+    <img src="images/logo/LOGO.png" style="border-radius: 45%; margin-top: 0px; margin-bottom: 0%;" class="sizelogo">
+    <br>
+</h1>
 
-    <script>
-        const text = "Rejoignez notre équipe d'enseignants!!!";
-        let index = 0;
-        function typeWriter() {
-            if (index < text.length) {
-                document.getElementById("dynamic-text").innerHTML += text.charAt(index);
-                index++;
-                setTimeout(typeWriter, 50);
-            }
+<script>
+    const text = "Rejoignez notre équipe d'enseignants!!!";
+    let index = 0;
+    function typeWriter() {
+        if (index < text.length) {
+            document.getElementById("dynamic-text").innerHTML += text.charAt(index);
+            index++;
+            setTimeout(typeWriter, 50);
         }
-        typeWriter();
-    </script>
+    }
+    typeWriter();
+</script>
 
-    <h2>Remplissez le formulaire ci-dessous :</h2>
+<form id="candidatureForm">
+    <label for="nom">Nom et Prénom</label>
+    <input type="text" id="nom" name="nom" required><br>
 
-    <form id="candidatureForm">
-        <label for="nom">Nom et Prénom</label>
-        <input type="text" id="nom" name="nom" required placeholder="Tah Bi Youan Arnaud"><br>
+    <label for="telephone">Téléphone(Whatsapp)</label>
+    <input type="tel" id="telephone" name="telephone" required><br>
 
-        <label for="telephone">Téléphone (WhatsApp)</label>
-        <input type="tel" id="telephone" name="telephone" required placeholder="+225xxxxxxxxxx"><br>
+    <label for="quartier">Lieu de Résidence</label>
+    <input type="text" id="quartier" name="quartier" required><br>
 
-        <label for="quartier">Lieu de Résidence</label>
-        <input type="text" id="quartier" name="quartier" required placeholder="San-Pédro (quartier Lac)"><br>
+    <label for="matiere1">Matière 1</label>
+    <input type="text" id="matiere1" name="matiere1" required><br>
 
-        <label for="matiere1">Matière enseignée 1</label>
-        <input type="text" id="matiere1" name="matiere1" required placeholder="Ex: Mathématique"><br>
+    <label for="matiere2">Matière 2</label>
+    <input type="text" id="matiere2" name="matiere2" required><br>
 
-        <label for="matiere2">Matière enseignée 2</label>
-        <input type="text" id="matiere2" name="matiere2" required placeholder="Ex: Physique-chimie"><br>
+    <label for="matiere3">Matière 3 (optionnelle)</label>
+    <input type="text" id="matiere3" name="matiere3"><br>
 
-        <label for="matiere3">Matière enseignée 3 (Optionnelle)</label>
-        <input type="text" id="matiere3" name="matiere3" placeholder="Ex: Science de la Vie et de la Terre (SVT)"><br>
+    <label for="cv">Charger votre CV (PDF uniquement)</label>
+    <input type="file" id="cv" name="cv" accept=".pdf" required><br>
 
-        <button type="submit" class="envoie">Envoyer</button>
-    </form>
+    <a href="index.html" class="retour">Retour</a>
+    <button type="submit" class="envoie">Envoyer</button>
+</form>
 
-    <script>
-        document.getElementById("candidatureForm").addEventListener("submit", function(event){
-            event.preventDefault(); // Empêcher le rechargement de la page
+<script>
+document.getElementById('candidatureForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-            // Récupération des données du formulaire
-            const formData = {
-                nom: document.getElementById("nom").value,
-                telephone: document.getElementById("telephone").value,
-                quartier: document.getElementById("quartier").value,
-                matiere1: document.getElementById("matiere1").value,
-                matiere2: document.getElementById("matiere2").value,
-                matiere3: document.getElementById("matiere3").value
-            };
+    const form = this;
+    const formData = new FormData(form);
+    const file = formData.get('cv');
+    const reader = new FileReader();
 
-            // Envoi via EmailJS
-            emailjs.send("service_EduPlus", "template_g6eukou", formData)
-                .then(function(response) {
-                    alert("Candidature envoyée avec succès !");
-                    document.getElementById("candidatureForm").reset(); // Réinitialiser le formulaire
-                }, function(error) {
-                    alert("Une erreur s'est produite : " + JSON.stringify(error));
-                });
-        });
-    </script>
+    reader.onload = function(event) {
+        const cvBase64 = event.target.result.split(',')[1];
+
+        const params = {
+            nom: formData.get('nom'),
+            telephone: formData.get('telephone'),
+            quartier: formData.get('quartier'),
+            matiere1: formData.get('matiere1'),
+            matiere2: formData.get('matiere2'),
+            matiere3: formData.get('matiere3') || "Non renseignée",
+            cv_file: cvBase64,
+            cv_filename: file.name
+        };
+
+
+
+        emailjs.send("service_EduPlus", "template_g6eukou", params)
+            .then(() => {
+                alert("Votre candidature a été envoyée avec succès !");
+                form.reset();
+            }, (error) => {
+                alert("Une erreur est survenue : " + JSON.stringify(error));
+            });
+    };
+
+    reader.readAsDataURL(file);
+});
+</script>
 
 </body>
 </html>
+
