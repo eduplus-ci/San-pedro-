@@ -1,6 +1,7 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin-top: 0%;
+
     padding: 20px;
     background-image: url(images/okoko.jpg);
     background-repeat: no-repeat; /* Pour éviter la répétition de l'image */
@@ -14,6 +15,7 @@ h1 {
 
 }
 .sizelogo {
+
 
      height: 200px;
      width: 200px;
@@ -32,8 +34,8 @@ h1 {
 
 @media (max-width: 425px) {
     .sizelogo{
-       height: 80px;
-       width: 80px
+       height: 90px;
+       width: 90px
     } 
 }
 
